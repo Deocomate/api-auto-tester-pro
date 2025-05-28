@@ -1,0 +1,86 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/info",
+        "method": "PUT",
+        "data": {
+            "email": "updated_email@example.com",
+            "phone": "0987654321",
+            "address": "456 New Address, Anytown",
+            "profileImage": "new_profile_image_url.jpg",
+            "gender": 1
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/1",
+        "method": "PUT",
+        "data": {
+            "password": "newStrongPassword123",
+            "email": "user1_updated@example.com",
+            "roles": [
+                "USER",
+                "STAFF"
+            ]
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/1",
+        "method": "PUT",
+        "data": {
+            "blog": {
+                "title": "Updated Blog Post Title",
+                "content": "This is the updated content of the blog post.",
+                "priority": 2,
+                "categoryId": 2
+            },
+            "thumbnail": "placeholder_for_updated_thumbnail.jpg"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/1",
+        "method": "PUT",
+        "data": {
+            "name": "Updated Category Name",
+            "priority": 2,
+            "parentId": null,
+            "type": "BLOG"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/1",
+        "method": "PUT",
+        "data": {
+            "product": {
+                "title": "Updated Product Title",
+                "author": "Updated Author",
+                "publisher": "Updated Publisher",
+                "publicationYear": 2024,
+                "packageSize": 12,
+                "pageSize": 320,
+                "form": "Hardcover",
+                "quantity": 90,
+                "discount": 140000,
+                "price": 190000,
+                "priority": 2,
+                "description": "This is an updated great product.",
+                "active": false,
+                "categoryIds": [
+                    3
+                ]
+            },
+            "thumbnail": "placeholder_for_updated_thumbnail.png",
+            "images": [
+                "placeholder_for_updated_image1.png"
+            ]
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/profile/1",
+        "method": "PUT",
+        "data": {
+            "fullName": "Jane Doe Updated",
+            "phone": "0112233445",
+            "address": "789 Updated Ave, Anytown",
+            "gender": "FEMALE"
+        }
+    }
+]

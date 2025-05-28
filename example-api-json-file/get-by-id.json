@@ -1,0 +1,50 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/file/media/test-file-name",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/customer/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/file/media/download/test-file-name",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/my-orders/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/rate/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/rate/product/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/profile/1",
+        "method": "GET"
+    }
+]

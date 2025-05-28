@@ -1,0 +1,17 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/1/password",
+        "method": "PATCH",
+        "data": {
+            "oldPassword": "mat_khau_cu",
+            "newPassword": "mat_khau_moi_an_toan"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/1",
+        "method": "PATCH",
+        "data": {
+            "status": 2
+        }
+    }
+]

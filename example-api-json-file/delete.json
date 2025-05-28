@@ -1,0 +1,55 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/file/media/ten_file_can_xoa.jpg",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/cart/cart-products",
+        "method": "DELETE",
+        "data": [
+            1,
+            2,
+            3
+        ]
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/customer/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/file/media/ten_file_can_xoa_khac.png",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/permissions/TEN_QUYEN_CAN_XOA",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/roles/TEN_VAI_TRO_CAN_XOA",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/rate/1",
+        "method": "DELETE"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/profile/1",
+        "method": "DELETE"
+    }
+]

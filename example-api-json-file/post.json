@@ -1,0 +1,249 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/auth/introspect",
+        "method": "POST",
+        "data": {
+            "token": "your_jwt_token_here"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/file/media",
+        "method": "POST",
+        "data": {
+            "file": "content_of_the_file_as_binary_string_or_placeholder"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/cart/internal/users",
+        "method": "POST",
+        "data": {
+            "id": 1,
+            "userId": 123
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/seeding/10",
+        "method": "POST"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/file/media",
+        "method": "POST",
+        "data": {
+            "file": "content_of_the_file_as_binary_string_or_placeholder"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/cart/internal/users",
+        "method": "POST"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/file/media",
+        "method": "POST"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/permissions",
+        "method": "POST",
+        "data": {
+            "name": "NEW_PERMISSION",
+            "description": "Description for new permission"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users/register",
+        "method": "POST",
+        "data": {
+            "username": "newuser",
+            "password": "password123",
+            "email": "newuser@example.com",
+            "roles": [
+                "USER"
+            ]
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/login",
+        "method": "POST",
+        "data": {
+            "username": "testuser",
+            "password": "password123"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/logout",
+        "method": "POST",
+        "data": {
+            "token": "your_jwt_token_to_logout"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/refresh-token",
+        "method": "POST",
+        "data": {
+            "token": "your_refresh_token_here"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/password-recovery/otp",
+        "method": "POST",
+        "data": {
+            "username": "user_for_otp_recovery"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/password-recovery/otp/verify",
+        "method": "POST",
+        "data": {
+            "username": "user_for_otp_verify",
+            "otp": 123456
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/auth/password-recovery/reset",
+        "method": "POST",
+        "data": {
+            "newPassword": "newSecurePassword123",
+            "verificationToken": "verification_token_from_otp_verify"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/notification/email",
+        "method": "POST",
+        "data": {
+            "to": {
+                "name": "Recipient Name",
+                "email": "recipient@example.com"
+            },
+            "subject": "Test Email Subject",
+            "htmlContent": "<h1>Test Email Content</h1><p>This is a test email.</p>"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/notification/fcm-token",
+        "method": "POST",
+        "data": {
+            "token": "fcm_device_token_here"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/notification/firebase",
+        "method": "POST",
+        "data": {
+            "title": "Test Firebase Notification",
+            "body": "This is a test notification body.",
+            "topic": "test_topic",
+            "tokens": [
+                "device_token_1",
+                "device_token_2"
+            ],
+            "data": {
+                "key1": "value1",
+                "key2": "value2"
+            }
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/",
+        "method": "POST",
+        "data": {
+            "profileId": 1,
+            "paymentMethod": 0,
+            "note": "Please deliver quickly.",
+            "orderProducts": [
+                {
+                    "productId": 101,
+                    "quantity": 2
+                },
+                {
+                    "productId": 102,
+                    "quantity": 1
+                }
+            ]
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/1/cancer",
+        "method": "POST",
+        "data": {
+            "note": "Cancelling the order due to change of plans."
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/profile/",
+        "method": "POST",
+        "data": {
+            "fullName": "John Doe",
+            "phone": "0123456789",
+            "address": "123 Main St, Anytown",
+            "gender": "MALE"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/",
+        "method": "POST",
+        "data": {
+            "blog": {
+                "title": "New Blog Post Title",
+                "content": "This is the content of the new blog post.",
+                "priority": 1,
+                "categoryId": 1
+            },
+            "thumbnail": "placeholder_for_thumbnail_file"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/cart/cart-products",
+        "method": "POST",
+        "data": {
+            "productId": 1,
+            "quantity": 1
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/",
+        "method": "POST",
+        "data": {
+            "name": "New Category Name",
+            "priority": 1,
+            "type": "PRODUCT"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/",
+        "method": "POST",
+        "data": {
+            "product": {
+                "title": "Amazing New Product",
+                "author": "Author Name",
+                "publisher": "Publisher Name",
+                "publicationYear": 2025,
+                "packageSize": 10,
+                "pageSize": 300,
+                "form": "Paperback",
+                "quantity": 100,
+                "discount": 150000,
+                "price": 200000,
+                "priority": 1,
+                "description": "This is a great product.",
+                "active": true,
+                "categoryIds": [
+                    1,
+                    2
+                ]
+            },
+            "thumbnail": "placeholder_for_thumbnail.jpg",
+            "images": [
+                "placeholder_for_image1.jpg",
+                "placeholder_for_image2.jpg"
+            ]
+        }
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/rate",
+        "method": "POST",
+        "data": {
+            "productId": 1,
+            "vote": 5,
+            "comment": "Excellent product!"
+        }
+    }
+]
