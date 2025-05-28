@@ -1,0 +1,28 @@
+[
+    {
+        "endpoint": "http://localhost:8080/route_get_all/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8080/route_get_by_id/1",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8080/route_create",
+        "method": "POST",
+        "data": {
+            "field": "field data"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8080/route_update",
+        "method": "PUT",
+        "data": {
+            "field": "field data"
+        }
+    },
+    {
+        "endpoint": "http://localhost:8080/route_delete/1",
+        "method": "DELETE"
+    }
+]

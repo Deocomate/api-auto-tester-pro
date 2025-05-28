@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Auto Tester Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .drag-over {
+            @apply border-indigo-500 bg-indigo-50;
+        }
+
+        .response-card {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .status-success {
+            @apply bg-emerald-100 text-emerald-800 border-emerald-200;
+        }
+
+        .status-error {
+            @apply bg-rose-100 text-rose-800 border-rose-200;
+        }
+
+        .status-loading {
+            @apply bg-amber-100 text-amber-800 border-amber-200;
+        }
+
+        .json-viewer {
+            font-family: 'Menlo', 'Monaco', 'Ubuntu Mono', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .token-hidden {
+            -webkit-text-security: disc;
+            text-security: disc;
+        }
+
+        .code-block-container {
+            @apply bg-slate-800 text-slate-100 p-5 rounded-lg relative shadow-md mt-2;
+        }
+
+        .code-block-container pre {
+            @apply overflow-x-auto max-h-96;
+        }
+
+        .copy-code-btn {
+            @apply absolute top-3 right-3 bg-slate-700 hover:bg-slate-600 text-slate-300 px-3 py-1.5 rounded-md text-xs transition-colors shadow;
+        }
+
+        .code-block-container pre::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+
+        .code-block-container pre::-webkit-scrollbar-track {
+            background: #4a5568;
+            border-radius: 10px;
+        }
+
+        .code-block-container pre::-webkit-scrollbar-thumb {
+            background: #718096;
+            border-radius: 10px;
+        }
+
+        .code-block-container pre::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-bold text-indigo-700 mb-3">API Auto Tester Pro</h1>
+            <p class="text-gray-600 text-lg">Streamline your API testing workflow. Upload, configure, and test.</p>
+        </div>
+
+        <div id="testerContent" class="mb-12"> 
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-xl font-semibold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.031 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                            </path>
+                        </svg>
+                        Authentication
+                    </h3>
+                    <div class="flex space-x-2">
+                        <button id="toggleTokenVisibility"
+                            class="text-gray-500 hover:text-indigo-600 transition-colors p-1 rounded-full hover:bg-indigo-100"
+                            title="Toggle token visibility">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                </path>
+                            </svg>
+                        </button>
+                        <button id="clearTokenBtn"
+                            class="text-rose-500 hover:text-rose-700 transition-colors p-1 rounded-full hover:bg-rose-100"
+                            title="Clear token">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                    <div class="flex-1">
+                        <label for="bearerToken" class="block text-sm font-medium text-gray-700 mb-1">Bearer
+                            Token</label>
+                        <input type="text" id="bearerToken" placeholder="Paste your bearer token here..."
+                            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-colors font-mono text-sm shadow-sm">
+                    </div>
+                    <div class="flex items-end space-x-2">
+                        <button id="saveTokenBtn"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-colors flex items-center shadow-sm hover:shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12">
+                                </path>
+                            </svg>
+                            Save
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-3 flex items-center space-x-4">
+                    <div class="flex items-center">
+                        <div id="tokenStatus" class="flex items-center text-sm">
+                            <div class="w-2.5 h-2.5 bg-gray-400 rounded-full mr-2"></div>
+                            <span class="text-gray-600">No token saved</span>
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        Token is saved to your browser's local storage.
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                    </svg>
+                    Upload API Configuration
+                </h3>
+                <div id="dropZone"
+                    class="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center transition-all duration-200 hover:border-indigo-500 hover:bg-indigo-50 cursor-pointer">
+                    <div class="flex flex-col items-center">
+                        <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <p class="text-xl font-medium text-gray-700 mb-2">Drop your JSON file here</p>
+                        <p class="text-gray-500 mb-4">or click to select a file from your computer</p>
+                        <input type="file" id="fileInput" class="hidden" accept=".json">
+                        <button type="button" onclick="document.getElementById('fileInput').click()"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-lg transition-colors shadow-sm hover:shadow-md">
+                            Browse Files
+                        </button>
+                    </div>
+                </div>
+
+                <div id="fileInfo" class="hidden mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="mb-3 sm:mb-0">
+                            <p class="font-medium text-gray-800" id="fileName"></p>
+                            <p class="text-sm text-gray-600" id="fileSize"></p>
+                            <p class="text-sm text-emerald-600 font-semibold" id="apiCount"></p>
+                        </div>
+                        <div class="flex space-x-3 w-full sm:w-auto">
+                            <button id="runTestsBtn"
+                                class="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-sm hover:shadow-md disabled:opacity-50">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                Run Tests
+                            </button>
+                            <button id="clearBtn"
+                                class="flex-1 sm:flex-none bg-gray-500 hover:bg-gray-600 text-white px-5 py-2.5 rounded-lg transition-colors flex items-center justify-center shadow-sm hover:shadow-md">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progressSection" class="hidden bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-semibold text-gray-800">Testing Progress</h3>
+                    <span id="progressText" class="text-sm text-gray-600">0/0 completed</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progressBar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+                        style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div id="resultsSection" class="hidden">
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-2xl font-semibold text-gray-800 mb-5">Test Results</h3>
+                    <div id="resultsContainer" class="space-y-5"></div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-semibold text-gray-800">Combined Results Log</h3>
+                        <button id="copyResultsBtn"
+                            class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg transition-colors flex items-center shadow-sm hover:shadow-md">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Copy All
+                        </button>
+                    </div>
+                    <textarea id="combinedResults"
+                        class="w-full h-72 p-4 border border-gray-300 rounded-lg resize-none font-mono text-sm bg-slate-50 focus:ring-1 focus:ring-indigo-500 focus:border-transparent"
+                        readonly placeholder="Combined results will appear here..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="documentationContent" class="mb-8"> 
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">API Configuration Guide & Examples</h2>
+                <p class="text-gray-600 mb-6">
+                    To use the API Auto Tester, provide a JSON file containing an array of API endpoint configurations.
+                    Each object in the array represents a single API request.
+                </p>
+
+                <h3 class="text-xl font-semibold text-gray-700 mb-3">JSON File Structure:</h3>
+                <ul
+                    class="list-disc list-inside text-gray-600 mb-8 space-y-1.5 bg-slate-50 p-4 rounded-md border border-slate-200">
+                    <li><code>endpoint</code> (string, required): The full URL of the API endpoint.</li>
+                    <li><code>method</code> (string, required): The HTTP method (e.g., "GET", "POST", "PUT", "DELETE",
+                        "PATCH").</li>
+                    <li><code>data</code> (object, optional): The request payload for methods like POST, PUT, PATCH.
+                    </li>
+                    <li><code>headers</code> (object, optional): Custom headers for the request (e.g.,
+                        <code>{"X-Custom-Header": "value"}</code>). The Bearer token is added automatically if provided.
+                    </li>
+                    <li><code>params</code> (object, optional): URL query parameters (e.g.,
+                        <code>{"id": 1, "sort": "asc"}</code>).
+                    </li>
+                </ul>
+
+                <div id="docExamplesContainer" class="space-y-8">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast"
+        class="hidden fixed top-5 right-5 px-6 py-3 rounded-xl shadow-2xl z-[100] flex items-center space-x-3">
+        <div id="toastIconContainer"></div>
+        <p id="toastMessage" class="font-medium"></p>
+    </div>
+
+    <script>
+        let apiEndpoints = [];
+        let testResults = [];
+        let tokenVisible = false;
+
+        // DOM Elements
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const apiCount = document.getElementById('apiCount');
+        const runTestsBtn = document.getElementById('runTestsBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const progressSection = document.getElementById('progressSection');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsContainer = document.getElementById('resultsContainer');
+        const combinedResults = document.getElementById('combinedResults');
+        const copyResultsBtn = document.getElementById('copyResultsBtn');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIconContainer = document.getElementById('toastIconContainer');
+
+        // Bearer Token Elements
+        const bearerToken = document.getElementById('bearerToken');
+        const saveTokenBtn = document.getElementById('saveTokenBtn');
+        const clearTokenBtn = document.getElementById('clearTokenBtn');
+        const toggleTokenVisibility = document.getElementById('toggleTokenVisibility');
+        const eyeIcon = document.getElementById('eyeIcon');
+        const tokenStatus = document.getElementById('tokenStatus');
+
+        // Documentation Elements
+        const docExamplesContainer = document.getElementById('docExamplesContainer');
+
+
+        const apiExamples = [
+            {
+                title: "Example 1: Basic GET Request",
+                description: "Fetches all items from a specified resource.",
+                json: `
+[
+    {
+        "endpoint": "http://localhost:8080/api/items/",
+        "method": "GET"
+        // Use this to retrieve a list of all items.
+        // No 'data' or 'params' are typically needed for this type of request.
+    }
+]`
+            },
+            {
+                title: "Example 2: GET Request with ID",
+                description: "Fetches a specific item by its unique ID.",
+                json: `
+[
+    {
+        "endpoint": "http://localhost:8080/api/items/123",
+        "method": "GET"
+        // The ID (e.g., 123) is part of the endpoint URL.
+        // This retrieves details for a single, specific item.
+    }
+]`
+            },
+            {
+                title: "Example 3: POST Request to Create Resource",
+                description: "Creates a new resource by sending data in the request body.",
+                json: `
+[
+    {
+        "endpoint": "http://localhost:8080/api/items",
+        "method": "POST",
+        "data": {
+            "name": "New Gadget",
+            "quantity": 10,
+            "status": "available"
+            // 'data' object contains the payload for the new item.
+            // Content-Type: application/json is usually assumed by servers for such data.
+        }
+    }
+]`
+            },
+            {
+                title: "Example 4: PUT Request to Update Resource",
+                description: "Updates an existing resource, typically identified by an ID in the endpoint.",
+                json: `
+[
+    {
+        "endpoint": "http://localhost:8080/api/items/123",
+        "method": "PUT",
+        "data": {
+            "name": "Updated Gadget Name",
+            "status": "out_of_stock"
+            // 'data' contains the fields to be updated for the item with ID 123.
+            // PUT usually replaces the entire resource or updates specified fields.
+        }
+    }
+]`
+            },
+            {
+                title: "Example 5: DELETE Request to Remove Resource",
+                description: "Removes a specific resource using its ID.",
+                json: `
+[
+    {
+        "endpoint": "http://localhost:8080/api/items/123",
+        "method": "DELETE"
+        // Deletes the item with ID 123.
+        // DELETE requests typically do not have a request body.
+    }
+]`
+            }
+        ];
+
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSavedToken();
+            populateDocumentationExamples();
+            bearerToken.classList.add('token-hidden'); // Initialize token as hidden
+            updateTokenStatus(!!localStorage.getItem('api_tester_bearer_token'));
+        });
+
+
+        // --- Populate Documentation Examples ---
+        function populateDocumentationExamples() {
+            docExamplesContainer.innerHTML = ''; // Clear any existing examples
+
+            apiExamples.forEach(example => {
+                const exampleDiv = document.createElement('div');
+                exampleDiv.className = 'mb-8';
+
+                const titleEl = document.createElement('h3');
+                titleEl.className = 'text-xl font-semibold text-gray-700 mb-2';
+                titleEl.textContent = example.title;
+
+                const descriptionEl = document.createElement('p');
+                descriptionEl.className = 'text-sm text-gray-600 mb-3';
+                descriptionEl.textContent = example.description;
+
+                const codeBlockContainer = document.createElement('div');
+                codeBlockContainer.className = 'code-block-container';
+
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-code-btn';
+                copyButton.textContent = 'Copy';
+                copyButton.onclick = function () { copyCodeToClipboard(this); };
+
+                const preEl = document.createElement('pre');
+                const codeEl = document.createElement('code');
+                codeEl.className = 'json-viewer text-sm';
+                let formattedJson = example.json.trim();
+                codeEl.innerHTML = formattedJson
+                    .replace(/"([^"]+)":/g, '<span class="text-sky-400">"$1"</span>:') // Keys
+                    .replace(/: "([^"]*)"/g, ': <span class="text-emerald-400">"$1"</span>') // String values
+                    .replace(/: (\d+(\.\d+)?)/g, ': <span class="text-amber-400">$1</span>') // Numbers
+                    .replace(/: (true|false)/g, ': <span class="text-purple-400">$1</span>') // Booleans
+                    .replace(/: null/g, ': <span class="text-rose-400">null</span>') // Nulls
+                    .replace(/\/\/(.*)/g, '<span class="text-slate-500 italic">//$1</span>'); // Comments
+
+                preEl.appendChild(codeEl);
+                codeBlockContainer.appendChild(copyButton);
+                codeBlockContainer.appendChild(preEl);
+
+                exampleDiv.appendChild(titleEl);
+                exampleDiv.appendChild(descriptionEl);
+                exampleDiv.appendChild(codeBlockContainer);
+
+                docExamplesContainer.appendChild(exampleDiv);
+            });
+        }
+
+
+        // --- Bearer Token Functions ---
+        function loadSavedToken() {
+            const savedToken = localStorage.getItem('api_tester_bearer_token');
+            if (savedToken) {
+                bearerToken.value = savedToken;
+                updateTokenStatus(true);
+            }
+            bearerToken.addEventListener('input', () => { // Auto-save on input
+                const token = bearerToken.value.trim();
+                if (token) {
+                    localStorage.setItem('api_tester_bearer_token', token);
+                    updateTokenStatus(true);
+                } else {
+                    localStorage.removeItem('api_tester_bearer_token');
+                    updateTokenStatus(false);
+                }
+            });
+        }
+
+        function saveToken() {
+            const token = bearerToken.value.trim();
+            if (token) {
+                localStorage.setItem('api_tester_bearer_token', token);
+                updateTokenStatus(true);
+                showToast('Token saved successfully!', 'success');
+            } else {
+                localStorage.removeItem('api_tester_bearer_token');
+                updateTokenStatus(false);
+                showToast('Token field is empty. No token saved.', 'info');
+            }
+        }
+
+        function clearToken() {
+            bearerToken.value = '';
+            localStorage.removeItem('api_tester_bearer_token');
+            updateTokenStatus(false);
+            showToast('Token cleared!', 'success');
+        }
+
+        function toggleTokenDisplay() {
+            tokenVisible = !tokenVisible;
+            if (tokenVisible) {
+                bearerToken.classList.remove('token-hidden');
+                // bearerToken.type = 'text'; // Type change can cause issues with text-security
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                `;
+            } else {
+                bearerToken.classList.add('token-hidden');
+                // bearerToken.type = 'password'; // Type change can cause issues with text-security
+                eyeIcon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                `;
+            }
+        }
+
+        function updateTokenStatus(hasToken) {
+            const statusElement = tokenStatus.querySelector('span');
+            const dotElement = tokenStatus.querySelector('div');
+
+            if (hasToken) {
+                dotElement.className = 'w-2.5 h-2.5 bg-emerald-500 rounded-full mr-2';
+                statusElement.textContent = 'Token active';
+                statusElement.className = 'text-emerald-600 font-medium';
+            } else {
+                dotElement.className = 'w-2.5 h-2.5 bg-gray-400 rounded-full mr-2';
+                statusElement.textContent = 'No token saved';
+                statusElement.className = 'text-gray-600';
+            }
+        }
+
+        saveTokenBtn.addEventListener('click', saveToken);
+        clearTokenBtn.addEventListener('click', clearToken);
+        toggleTokenVisibility.addEventListener('click', toggleTokenDisplay);
+
+
+        // --- Drag and Drop Handlers ---
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('drag-over');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+        });
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) handleFile(e.target.files[0]);
+        });
+
+        // --- File Handler ---
+        function handleFile(file) {
+            if (file.type !== 'application/json') {
+                showToast('Invalid file type. Please select a JSON file.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    apiEndpoints = JSON.parse(e.target.result);
+                    if (!Array.isArray(apiEndpoints)) throw new Error('JSON root must be an array.');
+                    for (let api of apiEndpoints) {
+                        if (!api.endpoint || !api.method) throw new Error('Each API object must have "endpoint" and "method".');
+                        if (typeof api.endpoint !== 'string' || typeof api.method !== 'string') throw new Error('"endpoint" and "method" must be strings.');
+                    }
+                    fileName.textContent = `File: ${file.name}`;
+                    fileSize.textContent = `Size: ${(file.size / 1024).toFixed(2)} KB`;
+                    apiCount.textContent = `${apiEndpoints.length} API endpoints loaded.`;
+                    fileInfo.classList.remove('hidden');
+                    runTestsBtn.disabled = false;
+                    clearResultsDisplay();
+                    showToast('API configuration loaded successfully!', 'success');
+                } catch (error) {
+                    showToast(`Error parsing JSON: ${error.message}`, 'error');
+                    console.error('Error parsing JSON:', error);
+                    apiEndpoints = [];
+                    fileInfo.classList.add('hidden');
+                    runTestsBtn.disabled = true;
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // --- Run Tests ---
+        runTestsBtn.addEventListener('click', async () => {
+            if (apiEndpoints.length === 0) {
+                showToast('No API endpoints loaded to test.', 'info');
+                return;
+            }
+            testResults = [];
+            resultsContainer.innerHTML = '';
+            combinedResults.value = '';
+            progressSection.classList.remove('hidden');
+            resultsSection.classList.remove('hidden');
+            runTestsBtn.disabled = true;
+            runTestsBtn.innerHTML = '<svg class="w-5 h-5 mr-2 loading-spinner animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>Running...';
+
+            for (let i = 0; i < apiEndpoints.length; i++) {
+                const api = apiEndpoints[i];
+                const resultCard = createResultCard(api, i);
+                resultsContainer.appendChild(resultCard);
+                await testAPI(api, i, resultCard);
+                const progress = ((i + 1) / apiEndpoints.length) * 100;
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${i + 1}/${apiEndpoints.length} completed`;
+            }
+            generateCombinedResults();
+            runTestsBtn.disabled = false;
+            runTestsBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>Run Tests';
+            showToast('All tests completed!', 'success');
+        });
+
+        // --- Test Single API ---
+        async function testAPI(api, index, resultCard) {
+            try {
+                const startTime = Date.now();
+                const config = {
+                    method: api.method,
+                    url: api.endpoint,
+                    timeout: 15000, // 15 seconds timeout
+                    headers: { ...api.headers }
+                };
+                const token = bearerToken.value.trim();
+                if (token) config.headers['Authorization'] = `Bearer ${token}`;
+                if (api.data && ['POST', 'PUT', 'PATCH'].includes(api.method.toUpperCase())) {
+                    config.data = api.data;
+                    if (!config.headers['Content-Type'] && typeof api.data === 'object') {
+                        config.headers['Content-Type'] = 'application/json';
+                    }
+                }
+                if (api.params) config.params = api.params;
+
+                config.startTime = startTime; // For duration calculation in error cases too
+                const response = await axios(config);
+                const duration = Date.now() - startTime;
+                const result = {
+                    api, success: true, status: response.status, statusText: response.statusText,
+                    data: response.data, duration,
+                    responseSize: JSON.stringify(response.data || {}).length // Calculate size of response body
+                };
+                testResults.push(result);
+                updateResultCard(resultCard, result);
+            } catch (error) {
+                const requestStartTime = error.config?.startTime || Date.now();
+                const duration = Date.now() - requestStartTime;
+                const result = {
+                    api, success: false, status: error.response?.status || 'Network/CORS Error',
+                    statusText: error.response?.statusText || error.message,
+                    data: error.response?.data || null, duration: Math.max(0, duration),
+                    error: error.message,
+                    responseSize: JSON.stringify(error.response?.data || {}).length, // Size of error response body
+                    requestHeaders: error.config?.headers // Log request headers for debugging
+                };
+                testResults.push(result);
+                updateResultCard(resultCard, result);
+            }
+        }
+
+        // --- Create Result Card ---
+        function createResultCard(api, index) {
+            const card = document.createElement('div');
+            card.className = 'response-card border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow';
+            const hasToken = bearerToken.value.trim();
+            const authPill = hasToken ? `<span class="ml-2 flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-700" title="Authenticated Request"><svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>Auth</span>` : '';
+
+            card.innerHTML = `
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3">
+                    <div class="flex items-center space-x-2 mb-2 sm:mb-0 min-w-0">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${getMethodColor(api.method)}">
+                            ${api.method.toUpperCase()}
+                        </span>
+                        <h4 class="font-medium text-gray-900 text-sm sm:text-base truncate" title="${api.endpoint}">${api.endpoint}</h4>
+                        ${authPill}
+                    </div>
+                    <div class="status-badge-container flex items-center space-x-2 self-start sm:self-center">
+                        <span class="status-badge status-loading inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border">
+                            <svg class="w-3 h-3 mr-1.5 loading-spinner animate-spin" fill="currentColor" viewBox="0 0 20 20"><path d="M10 3a7 7 0 017 7h-2a5 5 0 00-5-5V3z"></path></svg>
+                            Testing...
+                        </span>
+                    </div>
+                </div>
+                <div class="response-content text-sm">
+                    <div class="flex items-center justify-center py-6">
+                        <svg class="w-8 h-8 loading-spinner text-indigo-500 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                        <p class="ml-2 text-gray-500">Awaiting results...</p>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+
+        function getMethodColor(method) {
+            switch (method.toUpperCase()) {
+                case 'GET': return 'bg-sky-100 text-sky-700';
+                case 'POST': return 'bg-emerald-100 text-emerald-700';
+                case 'PUT': return 'bg-amber-100 text-amber-700';
+                case 'DELETE': return 'bg-rose-100 text-rose-700';
+                case 'PATCH': return 'bg-violet-100 text-violet-700';
+                default: return 'bg-gray-100 text-gray-700';
+            }
+        }
+
+        // --- Update Result Card ---
+        function updateResultCard(card, result) {
+            const statusBadgeContainer = card.querySelector('.status-badge-container');
+            const responseContent = card.querySelector('.response-content');
+            let statusBadgeHTML;
+
+            if (result.success) {
+                statusBadgeHTML = `<span class="status-badge status-success inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border">${result.status} OK</span>`;
+            } else {
+                statusBadgeHTML = `<span class="status-badge status-error inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border">${result.status} Error</span>`;
+            }
+            statusBadgeHTML += `<span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">${result.duration}ms</span>`;
+            statusBadgeContainer.innerHTML = statusBadgeHTML;
+
+            let dataHtml = '';
+            const responseDataString = result.data ? JSON.stringify(result.data, null, 2) : null;
+            const errorDetailsString = result.error ? escapeHtml(result.error) : null;
+            const requestHeadersString = result.requestHeaders && !result.success ? escapeHtml(JSON.stringify(result.requestHeaders, null, 2)) : null;
+
+
+            if (responseDataString) {
+                dataHtml += `
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5 mt-3">
+                            <span class="font-medium text-gray-600">Response Body:</span>
+                            <button onclick="toggleResponse(this)" class="text-indigo-500 hover:text-indigo-600 text-xs font-medium py-1 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                Show/Hide
+                            </button>
+                        </div>
+                        <pre class="response-data hidden bg-slate-50 p-3 rounded-md border border-slate-200 text-xs overflow-auto max-h-60 json-viewer">${escapeHtml(responseDataString)}</pre>
+                    </div>`;
+            }
+
+            if (errorDetailsString) {
+                dataHtml += `
+                    <div class="mt-2">
+                        <span class="font-medium text-rose-600">Error Details:</span>
+                        <p class="mt-1 text-sm text-rose-700 bg-rose-50 p-2 rounded border border-rose-200">${errorDetailsString}</p>
+                    </div>`;
+            }
+            if (requestHeadersString) { // This section is for request headers on error, not response headers.
+                dataHtml += `
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5 mt-3">
+                            <span class="font-medium text-gray-600">Request Headers (on error):</span>
+                            <button onclick="toggleResponse(this)" class="text-indigo-500 hover:text-indigo-600 text-xs font-medium py-1 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                Show/Hide
+                            </button>
+                        </div>
+                        <pre class="response-data hidden bg-slate-50 p-3 rounded-md border border-slate-200 text-xs overflow-auto max-h-48 json-viewer">${requestHeadersString}</pre>
+                    </div>`;
+            }
+
+
+            responseContent.innerHTML = `
+                <div class="space-y-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-1 text-xs">
+                        <div>
+                            <span class="font-medium text-gray-500">Status:</span>
+                            <span class="ml-1 ${result.success ? 'text-emerald-700 font-semibold' : 'text-rose-700 font-semibold'}">${result.status} ${result.statusText || ''}</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-500">Duration:</span>
+                            <span class="ml-1 text-gray-800">${result.duration}ms</span>
+                        </div>
+                        <div>
+                            <span class="font-medium text-gray-500">Size:</span>
+                            <span class="ml-1 text-gray-800">${(result.responseSize / 1024).toFixed(2)} KB</span>
+                        </div>
+                    </div>
+                    ${dataHtml || '<p class="text-gray-500 mt-2">No response body or error details.</p>'}
+                </div>
+            `;
+            card.querySelectorAll('.json-viewer').forEach(el => {
+                const content = el.textContent;
+                if (content && (content.trim().startsWith('{') || content.trim().startsWith('['))) {
+                    el.innerHTML = el.innerHTML
+                        .replace(/"([^"]+)":/g, '<span class="text-sky-500">"$1"</span>:')
+                        .replace(/: "([^"]*)"/g, ': <span class="text-emerald-500">"$1"</span>')
+                        .replace(/: (\d+(\.\d+)?)/g, ': <span class="text-amber-500">$1</span>')
+                        .replace(/: (true|false)/g, ': <span class="text-purple-500">$1</span>')
+                        .replace(/: null/g, ': <span class="text-rose-500">null</span>');
+                }
+            });
+        }
+        function escapeHtml(unsafe) {
+            if (unsafe === null || typeof unsafe === 'undefined') return '';
+            return unsafe
+                .toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- Toggle Response Visibility ---
+        window.toggleResponse = function (button) {
+            const responseDataElement = button.parentElement.nextElementSibling;
+            if (responseDataElement) {
+                responseDataElement.classList.toggle('hidden');
+                // Update button text based on visibility state
+                if (responseDataElement.classList.contains('hidden')) {
+                    button.textContent = 'Show/Hide'; // Or just 'Show'
+                } else {
+                    button.textContent = 'Hide/Show'; // Or just 'Hide'
+                }
+            }
+        }
+
+        // --- Generate Combined Results ---
+        function generateCombinedResults() {
+            let combined = `API Test Results - ${new Date().toLocaleString()}\n`;
+            combined += '================================================\n\n';
+            if (bearerToken.value.trim()) {
+                combined += 'Authentication: Bearer Token Used\n';
+                combined += '------------------------------------------------\n\n';
+            }
+            testResults.forEach((result, index) => {
+                combined += `${index + 1}. ${result.api.method.toUpperCase()} ${result.api.endpoint}\n`;
+                combined += `   Status: ${result.status} (${result.statusText || ''}) - ${result.duration}ms\n`;
+                combined += `   Success: ${result.success}\n`;
+                combined += `   Response Size: ${(result.responseSize / 1024).toFixed(2)} KB\n`;
+                if (result.success) {
+                    combined += `   Response Data: ${JSON.stringify(result.data, null, 2)}\n`;
+                } else {
+                    combined += `   Error: ${result.error}\n`;
+                    if (result.data) combined += `   Error Response Data: ${JSON.stringify(result.data, null, 2)}\n`;
+                }
+                combined += '\n' + '-'.repeat(80) + '\n\n';
+            });
+            combinedResults.value = combined;
+        }
+
+        // --- Copy Results ---
+        copyResultsBtn.addEventListener('click', async () => {
+            if (!combinedResults.value) {
+                showToast('No results to copy.', 'info');
+                return;
+            }
+            try {
+                // Try to use the modern Clipboard API
+                await navigator.clipboard.writeText(combinedResults.value);
+                showToast('Combined results copied to clipboard!', 'success');
+            } catch (err) {
+                console.warn('Clipboard API failed, trying fallback execCommand.');
+                // Fallback for browsers that don't support Clipboard API or due to iframe restrictions
+                try {
+                    combinedResults.select(); // Select the text
+                    document.execCommand('copy'); // Execute copy command
+                    showToast('Combined results copied (fallback)!', 'success');
+                } catch (fallbackErr) {
+                    showToast('Failed to copy results.', 'error');
+                    console.error('Fallback copy failed:', fallbackErr);
+                }
+            }
+        });
+
+
+        // --- Documentation Example Copy ---
+        window.copyCodeToClipboard = async function (button) {
+            const codeElement = button.nextElementSibling.querySelector('code');
+            if (codeElement) {
+                const exampleTitle = button.closest('.mb-8').querySelector('h3').textContent;
+                const exampleData = apiExamples.find(ex => ex.title === exampleTitle);
+
+                if (exampleData && exampleData.json) {
+                    const codeToCopy = exampleData.json.trim();
+                    try {
+                        await navigator.clipboard.writeText(codeToCopy);
+                        showToast('API example copied to clipboard!', 'success');
+                        button.textContent = 'Copied!';
+                        setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                    } catch (err) {
+                        console.warn('Clipboard API failed for doc example, trying fallback.');
+                        try {
+                            const tempTextarea = document.createElement('textarea');
+                            tempTextarea.value = codeToCopy;
+                            document.body.appendChild(tempTextarea);
+                            tempTextarea.select();
+                            tempTextarea.setSelectionRange(0, 99999); /* For mobile devices */
+                            document.execCommand('copy');
+                            document.body.removeChild(tempTextarea);
+                            showToast('API example copied (fallback)!', 'success');
+                            button.textContent = 'Copied!';
+                            setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+                        } catch (fallbackErr) {
+                            showToast('Failed to copy example.', 'error');
+                            console.error('Could not copy text: ', fallbackErr);
+                        }
+                    }
+                } else {
+                    showToast('Could not find example data to copy.', 'error');
+                }
+            }
+        }
+
+
+        // --- Clear Functions ---
+        clearBtn.addEventListener('click', () => {
+            clearAllDataAndDisplay();
+            showToast('All data and results cleared.', 'success');
+        });
+        function clearResultsDisplay() {
+            progressSection.classList.add('hidden');
+            resultsSection.classList.add('hidden');
+            resultsContainer.innerHTML = '';
+            combinedResults.value = '';
+            testResults = [];
+            progressBar.style.width = '0%';
+            progressText.textContent = '0/0 completed';
+        }
+        function clearAllDataAndDisplay() {
+            clearResultsDisplay();
+            fileInfo.classList.add('hidden');
+            apiEndpoints = [];
+            fileInput.value = ''; // Clear the file input
+            fileName.textContent = '';
+            fileSize.textContent = '';
+            apiCount.textContent = '';
+            runTestsBtn.disabled = true;
+        }
+
+        // --- Toast Notification ---
+        function showToast(message, type = 'success') {
+            toastMessage.textContent = message;
+            let bgColor, iconSvg;
+            switch (type) {
+                case 'success': bgColor = 'bg-emerald-500'; iconSvg = `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6-4a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`; break;
+                case 'error': bgColor = 'bg-rose-500'; iconSvg = `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`; break;
+                case 'info': bgColor = 'bg-sky-500'; iconSvg = `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`; break;
+                default: bgColor = 'bg-gray-700'; iconSvg = ``;
+            }
+            toast.className = `fixed top-5 right-5 px-6 py-4 rounded-xl shadow-2xl z-[100] flex items-center space-x-3 text-white ${bgColor}`;
+            toastIconContainer.innerHTML = iconSvg;
+            toast.classList.remove('hidden');
+            // Animation for toast
+            toast.style.transform = 'translateX(100%)'; toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+                toast.style.transform = 'translateX(0)'; toast.style.opacity = '1';
+            }, 10); // Small delay to ensure CSS transition applies
+            setTimeout(() => {
+                toast.style.transform = 'translateX(100%)'; toast.style.opacity = '0';
+                setTimeout(() => toast.classList.add('hidden'), 300); // Hide after animation
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

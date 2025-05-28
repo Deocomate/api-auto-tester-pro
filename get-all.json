@@ -1,0 +1,66 @@
+[
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/blog/category",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/category/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/customer/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/permissions",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/roles",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/identity/users",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/order/my-orders",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/active",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/top-discount",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/top-rating",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/category",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/product/rate",
+        "method": "GET"
+    },
+    {
+        "endpoint": "http://localhost:8888/api/v1/profile/my-profile",
+        "method": "GET"
+    }
+]
